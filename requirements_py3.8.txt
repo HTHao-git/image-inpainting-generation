@@ -1,0 +1,49 @@
+# updated_requirements_py3.8.txt
+# Core ML/DL libraries (Python 3.8 compatible versions)
+torch==1.13.1
+torchvision==0.14.1
+torchaudio==0.13.1
+
+# HuggingFace ecosystem - Updated versions
+transformers==4.30.2
+diffusers==0.21.4
+accelerate==0.20.3
+datasets==2.12.0
+huggingface-hub==0.15.1
+
+# Image processing
+Pillow==9.5.0
+opencv-python==4.7.0.72
+albumentations==1.3.0
+
+# Scientific computing
+numpy==1.24.3
+scipy==1.10.1
+scikit-image==0.19.3
+
+# Visualization
+matplotlib==3.6.3
+seaborn==0.12.2
+
+# Experiment tracking
+wandb==0.15.8
+tensorboard==2.11.2
+
+# Progress bars and utilities
+tqdm==4.64.1
+rich==12.6.0
+
+# Configuration management
+omegaconf==2.3.0
+python-dotenv==1.0.0
+
+# Development tools
+jupyter==1.0.0
+ipykernel==6.19.4
+pytest==7.2.1
+
+# Gradio for demo interface
+gradio==3.35.2
+
+# Additional utilities
+einops==0.6.1

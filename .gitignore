@@ -1,0 +1,77 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+.venv
+
+# Environment variables and secrets
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+*.env
+secrets.json
+config.json
+api_keys.txt
+tokens.txt
+
+# Data and model files
+data/
+*.pth
+*.pt
+*.safetensors
+*.ckpt
+
+# Outputs
+outputs/
+checkpoints/
+logs/
+wandb/
+runs/
+
+# Token scan results
+token_scan_results.txt
+
+# Cache directories
+.cache/
+transformers_cache/
+huggingface_hub/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Temporary files
+*.tmp
+*.temp
+*.log
+# Security - API Keys and Tokens
+.env
+*.env
+secrets.json
+config.json
+api_keys.txt
+tokens.txt
+*token*
+*secret*
+*key*.txt
+*key*.json
+
+# Cache directories that might contain tokens
+.cache/
+transformers_cache/
+huggingface_hub/

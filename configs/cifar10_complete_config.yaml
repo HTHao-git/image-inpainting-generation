@@ -1,0 +1,63 @@
+# Complete CIFAR-10 configuration with all required fields
+model:
+  pretrained_model_name: "runwayml/stable-diffusion-v1-5"
+  in_channels: 4
+  out_channels: 4
+  cross_attention_dim: 768
+
+data:
+  dataset_type: "cifar10"
+  data_dir: "data/cifar10"
+  image_size: 128
+  batch_size: 2
+  num_workers: 0
+  task_ratio: 0.7
+  val_split: 0.1
+  shuffle: true
+  augment: true
+
+training:
+  num_epochs: 6
+  learning_rate: 0.00002
+  save_steps: 1000
+  log_steps: 100
+  max_grad_norm: 1.0
+  diffusion_weight: 1.0
+  perceptual_weight: 0.1
+  mask_weight: 2.0
+  task_weights:
+    generation: 1.0
+    inpainting: 0.5
+  optimizer:
+    type: "adamw"
+    weight_decay: 0.01
+  lr_scheduler:
+    type: "cosine"
+    warmup_steps: 200
+
+validation:
+  run_validation: true
+  validate_every_n_epochs: 2
+  sample_every_n_epochs: 2
+  num_validation_samples: 5
+
+evaluation:
+  evaluate_every_n_epochs: 2
+  generation_prompts:
+    - "a photo of an airplane"
+    - "a realistic cat image"
+    - "a clear picture of a car"
+  num_samples_per_prompt: 3
+
+paths:
+  model_dir: "outputs/models/cifar10_complete"
+  log_dir: "outputs/logs/cifar10_complete"
+  checkpoint_dir: "outputs/checkpoints/cifar10_complete"
+  sample_dir: "outputs/samples/cifar10_complete"
+  evaluation_dir: "outputs/evaluation/cifar10_complete"
+
+hardware:
+  device: "cpu"
+  mixed_precision: false
+  gradient_checkpointing: true
+  memory_efficient_attention: true

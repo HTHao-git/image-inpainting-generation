@@ -1,0 +1,87 @@
+# Training Configuration for Unified Diffusion Model
+
+# Model settings
+model:
+  pretrained_model_name: "runwayml/stable-diffusion-v1-5"
+  in_channels: 4
+  out_channels: 4
+  cross_attention_dim: 768
+
+# Data settings
+data:
+  data_dir: "data/samples"  # Change this to your actual dataset path
+  image_size: 512
+  batch_size: 4  # Small batch size for CPU training
+  num_workers: 0  # Use 0 for CPU training
+  task_ratio: 0.5  # 50% generation, 50% inpainting
+  
+  # Data augmentation
+  mask_types: ["random", "center", "edges", "irregular"]
+  mask_ratio_range: [0.1, 0.4]
+  
+  # Train/val split
+  val_split: 0.1
+  shuffle: true
+
+# Training settings
+training:
+  num_epochs: 10
+  learning_rate: 1e-5  # Lower LR for stable training
+  save_steps: 50
+  log_steps: 10
+  max_grad_norm: 1.0
+  
+  # Loss weights
+  diffusion_weight: 1.0
+  perceptual_weight: 0.1
+  mask_weight: 5.0
+  task_weights:
+    generation: 1.0
+    inpainting: 1.0
+  
+  # Optimizer
+  optimizer:
+    type: "adamw"
+    weight_decay: 0.01
+    betas: [0.9, 0.999]
+    eps: 1e-8
+  
+  # Learning rate scheduler
+  lr_scheduler:
+    type: "cosine"
+    warmup_steps: 100
+    min_lr_factor: 0.01
+
+# Paths
+paths:
+  model_dir: "outputs/models"
+  log_dir: "outputs/logs"
+  checkpoint_dir: "outputs/checkpoints"
+  sample_dir: "outputs/samples"
+
+# Device settings
+device: "cpu"  # Change to "cuda" if you have GPU
+
+# Logging
+logging:
+  use_wandb: false  # Set to true if you want to use Weights & Biases
+  wandb_project: "unified-diffusion"
+  wandb_entity: null
+  log_level: "INFO"
+  
+# Validation and sampling
+validation:
+  run_validation: true
+  val_steps: 100
+  sample_every_n_epochs: 2
+  num_sample_images: 4
+  sample_prompts:
+    - "a beautiful sunset over mountains"
+    - "a cat sitting on a windowsill"
+    - "a modern building in the city"
+    - "a colorful flower garden"
+
+# Resume training
+resume:
+  checkpoint_path: null  # Path to checkpoint to resume from
+  auto_resume: true  # Automatically resume from latest checkpoint

@@ -1,0 +1,47 @@
+# Model Architecture Configuration
+model:
+  # Backbone U-Net configuration
+  unet:
+    in_channels: 4  # VAE latent channels
+    out_channels: 4
+    down_block_types:
+      - "CrossAttnDownBlock2D"
+      - "CrossAttnDownBlock2D"
+      - "CrossAttnDownBlock2D"
+      - "DownBlock2D"
+    up_block_types:
+      - "UpBlock2D"
+      - "CrossAttnUpBlock2D"
+      - "CrossAttnUpBlock2D"
+      - "CrossAttnUpBlock2D"
+    block_out_channels: [320, 640, 1280, 1280]
+    layers_per_block: 2
+    attention_head_dim: 8
+    cross_attention_dim: 768
+    use_linear_projection: False
+    
+  # Task-specific heads
+  heads:
+    generation:
+      enabled: true
+      additional_layers: 2
+    inpainting:
+      enabled: true
+      mask_channels: 1
+      additional_layers: 2
+      
+  # VAE configuration
+  vae:
+    pretrained_model: "runwayml/stable-diffusion-v1-5"
+    
+  # Text encoder
+  text_encoder:
+    pretrained_model: "runwayml/stable-diffusion-v1-5"
+    
+  # Diffusion parameters
+  diffusion:
+    num_train_timesteps: 1000
+    beta_start: 0.00085
+    beta_end: 0.012
+    beta_schedule: "scaled_linear"
+    prediction_type: "epsilon"
