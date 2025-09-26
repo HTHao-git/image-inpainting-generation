@@ -1,0 +1,153 @@
+# Multi-Objective Genetic Algorithm Configuration
+# Configuration for hyperparameter optimization using MOGA/NSGA-II
+
+# Genetic Algorithm Parameters
+genetic_algorithm:
+  population_size: 20          # Size of population (reduce for faster experimentation)
+  num_generations: 15          # Number of generations to evolve
+  crossover_rate: 0.8          # Probability of crossover
+  mutation_rate: 0.15          # Probability of mutation
+  mutation_strength: 0.1       # Strength of mutations (0.1 = 10% of parameter range)
+  tournament_size: 3           # Tournament selection size
+  elite_size: 3                # Number of elite individuals to preserve
+  random_seed: 42              # Random seed for reproducibility
+
+# Hyperparameter Search Space
+# These define the ranges for optimization
+hyperparameter_space:
+  # Learning rate (log scale from 1e-6 to 1e-2)
+  learning_rate:
+    type: continuous
+    min: 1e-6
+    max: 1e-2
+    log_scale: true
+  
+  # Batch size (categorical for memory constraints)
+  batch_size:
+    type: categorical
+    choices: [1, 2, 4, 8]      # Reduced for memory efficiency
+  
+  # Image size (categorical)
+  image_size:
+    type: categorical
+    choices: [256, 384]        # Reduced options for faster training
+  
+  # Loss weights
+  diffusion_weight:
+    type: continuous
+    min: 0.5
+    max: 2.0
+  
+  perceptual_weight:
+    type: continuous
+    min: 0.0
+    max: 0.5
+  
+  mask_weight:
+    type: continuous
+    min: 1.0
+    max: 8.0
+  
+  # Optimizer parameters
+  weight_decay:
+    type: continuous
+    min: 1e-6
+    max: 1e-2
+    log_scale: true
+  
+  beta1:
+    type: continuous
+    min: 0.85
+    max: 0.95
+  
+  beta2:
+    type: continuous
+    min: 0.95
+    max: 0.999
+  
+  # Training epochs (will use early stopping)
+  max_epochs:
+    type: integer
+    min: 3
+    max: 15               # Reduced for faster evaluation
+  
+  # Memory optimization
+  gradient_checkpointing:
+    type: categorical
+    choices: [true, false]
+  
+  attention_slice_size:
+    type: categorical
+    choices: [1, 2, 4]
+
+# Fitness Evaluation Parameters
+fitness_evaluation:
+  device: "cpu"                    # Use CPU for compatibility
+  max_training_epochs: 5           # Max epochs per evaluation (early stopping may reduce this)
+  early_stopping_patience: 2      # Patience for early stopping
+  min_samples_for_eval: 8         # Minimum samples for accuracy evaluation
+  
+  # Weights for multi-objective fitness combination
+  # These are used for ranking, not for the actual NSGA-II algorithm
+  objective_weights:
+    speed: 0.4      # Weight for speed objective
+    accuracy: 0.4   # Weight for accuracy objective  
+    stability: 0.2  # Weight for stability objective
+
+# Data Configuration for MOGA Evaluation
+data:
+  data_dir: "data/samples"
+  # Use small dataset for faster evaluation
+  max_train_samples: 50     # Limit training samples for speed
+  max_val_samples: 20       # Limit validation samples
+  num_workers: 0            # Single-threaded for stability
+  task_ratio: 0.5           # 50% generation, 50% inpainting
+  
+  # Data augmentation (reduced for speed)
+  mask_types: ["random", "center"]
+  mask_ratio_range: [0.1, 0.3]
+  val_split: 0.2
+  shuffle: true
+
+# Model Configuration
+model:
+  pretrained_model_name: "runwayml/stable-diffusion-v1-5"
+  in_channels: 4
+  out_channels: 4
+  cross_attention_dim: 768
+  # Memory optimization
+  enable_memory_efficient_attention: true
+  enable_flash_attention: false    # May not be available
+
+# Output and Logging
+paths:
+  results_dir: "outputs/moga_results"
+  evaluation_dir: "outputs/moga_evaluation"
+  checkpoint_dir: "outputs/moga_checkpoints"
+  visualization_dir: "outputs/moga_visualization"
+  model_dir: "outputs/moga_models"       # For temporary model storage
+  log_dir: "outputs/moga_logs"
+
+# Logging Configuration
+logging:
+  log_level: "INFO"
+  save_interval: 5              # Save checkpoint every N generations
+  plot_interval: 5              # Create plots every N generations
+  verbose_evaluation: false     # Detailed evaluation logging
+
+# Resume Configuration
+resume:
+  enable_resume: true           # Enable resuming from checkpoints
+  checkpoint_path: null         # Path to specific checkpoint (auto-find latest if null)
+  
+# Experimental Features
+experimental:
+  enable_adaptive_parameters: false    # Adaptive mutation/crossover rates
+  enable_parallel_evaluation: false    # Parallel fitness evaluation (not implemented)
+  use_surrogate_model: false          # Use surrogate model for faster evaluation
+  
+# Validation and Testing
+validation:
+  run_validation_after_evolution: true
+  test_best_configurations: 3          # Test top-3 configurations more thoroughly
+  extended_test_epochs: 10             # Longer test for best configurations
